@@ -1,59 +1,59 @@
-const express = require ('express');
-const routes = express.Router ();
-const Hotel = require ('../models/HotelSchema');
-const Comments = require ('../models/commentsSchema');
-const mongoose = require ('mongoose');
+const express = require('express');
+const routes = express.Router();
+const Hotel = require('../models/HotelSchema');
+const Comments = require('../models/commentsSchema');
+const mongoose = require('mongoose');
 
 //Route for GET all Hotels Comments.....
 
-routes.get ('/', (req, res, next) => {
-  Comments.find ()
-    .populate ('Hotel_id', 'ResturentName')
-    .then (doc => {
-      if (doc.length > 0) {
-        const response = {
-          count: doc.length,
-          Comments: doc.map (docs => {
-            return {
-              id: docs._id,
-              Hotel: docs.Hotel_id,
-              UserName: docs.UserName,
-              Rating: docs.Rating,
-              Comments: docs.Comments,
-              User_image: docs.User_image,
-            };
-          }),
-        };
-        res.send (response);
-      } else {
-        res.send ({
-          message: 'No Comments Exist',
-        });
-      }
-    })
-    .catch (err => {
-      res.send ({
-        message: err,
-      });
-    });
-});
+// routes.get ('/', (req, res, next) => {
+//   Comments.find ()
+//     .populate ('Hotel_id', 'ResturentName')
+//     .then (doc => {
+//       if (doc.length > 0) {
+//         const response = {
+//           count: doc.length,
+//           Comments: doc.map (docs => {
+//             return {
+//               id: docs._id,
+//               Hotel: docs.Hotel_id,
+//               UserName: docs.UserName,
+//               Rating: docs.Rating,
+//               Comments: docs.Comments,
+//               User_image: docs.User_image,
+//             };
+//           }),
+//         };
+//         res.send (response);
+//       } else {
+//         res.send ({
+//           message: 'No Comments Exist',
+//         });
+//       }
+//     })
+//     .catch (err => {
+//       res.send ({
+//         message: err,
+//       });
+//     });
+// });
 
 //Route for POST Single Hotel Comment.....
 
-routes.post ('/', (req, res, next) => {
-  Hotel.findById (req.body.Hotel_id)
-    .then (hotel => {
-      const comments = new Comments ({
-        _id: new mongoose.Types.ObjectId (),
+routes.post('/', (req, res, next) => {
+  Hotel.findById(req.body.Hotel_id)
+    .then((hotel) => {
+      const comments = new Comments({
+        _id: new mongoose.Types.ObjectId(),
         Hotel_id: req.body.Hotel_id,
         UserName: req.body.usern_name,
         Rating: req.body.rating,
         Comments: req.body.comment,
         User_image: req.body.user_image,
       });
-      return comments.save ();
+      return comments.save();
     })
-    .then (docs => {
+    .then((docs) => {
       const response = {
         message: 'Comments Added',
         Comments: {
@@ -65,10 +65,10 @@ routes.post ('/', (req, res, next) => {
           User_image: docs.User_image,
         },
       };
-      res.send (response);
+      res.send(response);
     })
-    .catch (err => {
-      res.send ({
+    .catch((err) => {
+      res.send({
         error: err,
         message: 'Not Found',
       });
@@ -109,21 +109,21 @@ routes.post ('/', (req, res, next) => {
 
 // Route for GET Comments of single Hotel by hotel ID.....
 
-routes.get ('/:Hotel_id', (req, res, next) => {
-  const id = req.params.Hotel_id;
-  Comments.find ({Hotel_id: id})
-    .then (comments => {
+routes.get('/', (req, res, next) => {
+  const id = req.body.Hotel_id;
+  Comments.find({ Hotel_id: id })
+    .then((comments) => {
       if (comments.length >= 1) {
-        res.send ({
+        res.send({
           message: 'This Hotel Contains Follwing Comments',
           Comments: comments,
         });
       } else {
-        res.send ({message: 'No Comment Exist'});
+        res.send({ message: 'No Comment Exist' });
       }
     })
-    .catch (err => {
-      res.send ({
+    .catch((err) => {
+      res.send({
         message: 'Please use Correct Hotel ID',
         error: err,
       });
